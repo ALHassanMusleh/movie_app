@@ -24,10 +24,10 @@ abstract class AppTheme {
       showUnselectedLabels: true,
       selectedIconTheme: IconThemeData(
         color: AppColors.primary,
-        size: 28,
+        size: 25,
       ),
       unselectedIconTheme: IconThemeData(
-        size: 28,
+        size: 25,
         color: Colors.white,
       ),
     ),

@@ -3,7 +3,6 @@ import 'package:movie_app/ui/screens/home/tabs/browse_tab/browse_tab.dart';
 import 'package:movie_app/ui/screens/home/tabs/home_tab/home_tab.dart';
 import 'package:movie_app/ui/screens/home/tabs/search_tab/search_tab.dart';
 import 'package:movie_app/ui/screens/home/tabs/watchlist_tab/watchlist_tab.dart';
-import 'package:movie_app/ui/utils/app_colors.dart';
 
 class HomeScaffold extends StatefulWidget {
   static const String routeName = 'Home';
@@ -15,17 +14,16 @@ class HomeScaffold extends StatefulWidget {
 
 class _HomeScaffoldState extends State<HomeScaffold> {
   int selectedIndex = 0;
-  List<Widget> tabs = [HomeTab(),SearchTab(),BrowseTab(),WatchlistTab()];
+  List<Widget> tabs = [HomeTab(), SearchTab(), BrowseTab(), WatchlistTab()];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: tabs[selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: selectedIndex,
-        onTap: (index){
+        onTap: (index) {
           selectedIndex = index;
-          setState(() {
-          });
+          setState(() {});
         },
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'HOME'),
