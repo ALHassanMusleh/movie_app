@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:movie_app/ui/screens/movie_details/movie_details.dart';
 import 'package:movie_app/ui/utils/app_colors.dart';
 import 'package:movie_app/ui/utils/widgets/custom_movie_header.dart';
 import 'package:movie_app/ui/utils/widgets/image_and_bookmark_large.dart';
@@ -182,14 +183,14 @@ class _HomeTabState extends State<HomeTab> {
 
   movieFullHeader() => InkWell(
     onTap: (){
-
+      Navigator.pushNamed(context, MovieDetails.routeName);
     },
     child: Container(
           height: MediaQuery.of(context).size.height * .32,
           child: Stack(
             clipBehavior: Clip.none,
             children: [
-              CustomMovieCover(context: context),
+              CustomMovieCover(),
               Positioned(
                 top: 75,
                 left: 10,

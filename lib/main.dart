@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app/ui/screens/home/tabs/home_scaffold.dart';
+import 'package:movie_app/ui/screens/movie_details/movie_details.dart';
 import 'package:movie_app/ui/screens/splash/splash.dart';
 import 'package:movie_app/ui/utils/app_theme.dart';
 
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
       routes: {
         Splash.routeName: (_) => const Splash(),
         HomeScaffold.routeName: (_) => const HomeScaffold(),
+        MovieDetails.routeName: (_) => const MovieDetails(),
       },
       initialRoute: Splash.routeName,
     );

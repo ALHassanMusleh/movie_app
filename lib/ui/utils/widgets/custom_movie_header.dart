@@ -4,10 +4,8 @@ import 'package:movie_app/ui/utils/app_colors.dart';
 class CustomMovieCover extends StatelessWidget {
   const CustomMovieCover({
     super.key,
-    required this.context,
   });
 
-  final BuildContext context;
 
   @override
   Widget build(BuildContext context) {
