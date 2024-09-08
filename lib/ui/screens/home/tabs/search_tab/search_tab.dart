@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movie_app/data/api/api_manager.dart';
 import 'package:movie_app/ui/utils/app_colors.dart';
 
 class SearchTab extends StatelessWidget {
@@ -6,6 +7,7 @@ class SearchTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ApiManager.searchMovie('ab');
     return Column(
       children: [
         Container(

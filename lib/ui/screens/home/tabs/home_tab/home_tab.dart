@@ -1,13 +1,17 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:movie_app/data/api/api_manager.dart';
+import 'package:movie_app/data/model/popular_response.dart';
+import 'package:movie_app/data/model/result.dart';
 import 'package:movie_app/ui/screens/movie_details/movie_details.dart';
 import 'package:movie_app/ui/utils/app_colors.dart';
+import 'package:movie_app/ui/utils/widgets/custom_movie_details.dart';
 import 'package:movie_app/ui/utils/widgets/custom_movie_header.dart';
 import 'package:movie_app/ui/utils/widgets/image_and_bookmark_large.dart';
 import 'package:movie_app/ui/utils/widgets/image_and_bookmark_small.dart';
 
 class HomeTab extends StatefulWidget {
-  const HomeTab({super.key});
+  HomeTab({super.key});
 
   @override
   State<HomeTab> createState() => _HomeTabState();
@@ -33,28 +37,48 @@ class _HomeTabState extends State<HomeTab> {
     );
   }
 
-  buildTopPopular() => CarouselSlider(
-        items: [
-          movieFullHeader(),
-          movieFullHeader(),
-        ],
-        options: CarouselOptions(
-          height: 250,
-          initialPage: 0,
-          enableInfiniteScroll: true,
-          reverse: false,
-          autoPlay: true,
-          autoPlayInterval: const Duration(
-            seconds: 3,
-          ),
-          autoPlayAnimationDuration: const Duration(
-            seconds: 1,
-          ),
-          autoPlayCurve: Curves.fastOutSlowIn,
-          scrollDirection: Axis.horizontal,
-          viewportFraction: 1, //عشان الصورة تاخذ كل العرض
-        ),
+  buildTopPopular() => FutureBuilder<PopularResponse>(
+        future: ApiManager.getPopularMovie(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(
+                snapshot.error.toString(),
+                style: TextStyle(fontSize: 40),
+              ),
+            );
+          } else if (snapshot.hasData) {
+            return buildCarosalSlider(snapshot.data!.results!);
+          } else {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
       );
+
+  buildCarosalSlider(List<Results> movies) {
+    List<Widget> items = movies.map((movie) => movieFullHeader(movie)).toList();
+    return CarouselSlider(
+      items: items,
+      options: CarouselOptions(
+        height: 250,
+        initialPage: 0,
+        enableInfiniteScroll: true,
+        reverse: false,
+        autoPlay: true,
+        autoPlayInterval: const Duration(
+          seconds: 5,
+        ),
+        autoPlayAnimationDuration: const Duration(
+          seconds: 1,
+        ),
+        autoPlayCurve: Curves.fastOutSlowIn,
+        scrollDirection: Axis.horizontal,
+        viewportFraction: 1, //عشان الصورة تاخذ كل العرض
+      ),
+    );
+  }
 
   buildNewReleases() => Container(
         padding: EdgeInsets.all(15),
@@ -73,13 +97,34 @@ class _HomeTabState extends State<HomeTab> {
             const SizedBox(
               height: 5,
             ),
-            Expanded(
-              child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 10,
-                  itemBuilder: (context, index) {
-                    return ImageAndBookmarkSmall();
-                  }),
+            FutureBuilder<PopularResponse>(
+              future: ApiManager.getNewRealeasesMovie(),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text(
+                      snapshot.error.toString(),
+                      style: TextStyle(fontSize: 40),
+                    ),
+                  );
+                } else if (snapshot.hasData) {
+                  return Expanded(
+                    child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: snapshot.data!.results!.length,
+                        itemBuilder: (context, index) {
+                          return ImageAndBookmarkSmall(
+                            imagePath:
+                                snapshot.data!.results![index].posterPath ?? '',
+                          );
+                        }),
+                  );
+                } else {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
             ),
           ],
         ),
@@ -102,110 +147,73 @@ class _HomeTabState extends State<HomeTab> {
             const SizedBox(
               height: 5,
             ),
-            Expanded(
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                separatorBuilder: (context, index) {
-                  return const SizedBox(
-                    width: 10,
+            FutureBuilder<PopularResponse>(
+              future: ApiManager.getRecommendedMovie(),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text(
+                      snapshot.error.toString(),
+                      style: TextStyle(fontSize: 40),
+                    ),
                   );
-                },
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return Container(
-                      width: MediaQuery.of(context).size.width * .23,
-                      height: MediaQuery.of(context).size.height * .2,
-                      decoration: BoxDecoration(
-                        color: Color(0xff343534),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Column(
-                        children: [
-                          ImageAndBookmarkSmall(),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 5),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.star,
-                                      color: AppColors.primary,
-                                      size: 12,
-                                    ),
-                                    const SizedBox(
-                                      width: 8,
-                                    ),
-                                    Text(
-                                      '7.7',
-                                      style: TextStyle(
-                                        color: AppColors.white,
-                                        fontSize: 15,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Text(
-                                  'Deadpool 2',
-                                  style: TextStyle(
-                                    color: AppColors.white,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Text(
-                                  '2018  R  1h 59m',
-                                  style: TextStyle(
-                                    color: AppColors.white.withOpacity(.53),
-                                    fontSize: 10,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ));
-                },
-              ),
+                } else if (snapshot.hasData) {
+                  return Expanded(
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      separatorBuilder: (context, index) {
+                        return const SizedBox(
+                          width: 10,
+                        );
+                      },
+                      itemCount: snapshot.data!.results!.length,
+                      itemBuilder: (context, index) {
+                        return CustomMovieDetails(
+                          movie: snapshot.data!.results![index],
+                        );
+                      },
+                    ),
+                  );
+                } else {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
             ),
           ],
         ),
       );
 
-  movieFullHeader() => InkWell(
-    onTap: (){
-      Navigator.pushNamed(context, MovieDetails.routeName);
-    },
-    child: Container(
+  Widget movieFullHeader(Results movie) => InkWell(
+        onTap: () {
+          Navigator.pushNamed(context, MovieDetails.routeName);
+        },
+        child: Container(
           height: MediaQuery.of(context).size.height * .32,
           child: Stack(
             clipBehavior: Clip.none,
             children: [
-              CustomMovieCover(),
+              CustomMovieCover(
+                coverImage: movie.backdropPath ?? '',
+              ),
               Positioned(
                 top: 75,
                 left: 10,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    ImageAndBookmarkLarge(),
+                    ImageAndBookmarkLarge(
+                      imagePath: movie.posterPath ?? '',
+                    ),
                     const SizedBox(
                       width: 10,
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Dora and the lost city of gold',
+                        Text(
+                          movie.title ?? '',
                           style: TextStyle(
                             color: AppColors.white,
                           ),
@@ -214,7 +222,7 @@ class _HomeTabState extends State<HomeTab> {
                           height: 5,
                         ),
                         Text(
-                          '2019  PG-13  2h 7m',
+                          movie.releaseDate ?? '',
                           style: TextStyle(
                             color: AppColors.white.withOpacity(.53),
                           ),
@@ -230,5 +238,5 @@ class _HomeTabState extends State<HomeTab> {
             ],
           ),
         ),
-  );
+      );
 }

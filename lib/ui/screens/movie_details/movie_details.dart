@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movie_app/data/api/api_manager.dart';
 import 'package:movie_app/ui/utils/app_colors.dart';
 import 'package:movie_app/ui/utils/widgets/custom_movie_header.dart';
 import 'package:movie_app/ui/utils/widgets/image_and_bookmark_large.dart';
@@ -10,6 +11,8 @@ class MovieDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ApiManager.getDetailsMovie('278');
+    ApiManager.getSimilarMovie('278');
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dora and the lost city of gold'),
@@ -21,7 +24,7 @@ class MovieDetails extends StatelessWidget {
             flex: 7,
             child: Column(
               children: [
-                const CustomMovieCover(),
+                 // CustomMovieCover(),
                 const SizedBox(
                   height: 10,
                 ),
@@ -59,8 +62,8 @@ class MovieDetails extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Expanded(
-                                flex: 4, child: ImageAndBookmarkLarge()),
+                            // const Expanded(
+                            //     flex: 4, child: ImageAndBookmarkLarge()),
                             Expanded(
                               flex: 6,
                               child: Column(
@@ -187,7 +190,7 @@ class MovieDetails extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'Recomended',
+                    'More like this',
                     style: TextStyle(
                       color: AppColors.white,
                     ),
@@ -214,7 +217,7 @@ class MovieDetails extends StatelessWidget {
                             ),
                             child: Column(
                               children: [
-                                const ImageAndBookmarkSmall(),
+                                 // ImageAndBookmarkSmall(imagePath: '',),
                                 Padding(
                                   padding:
                                       const EdgeInsets.symmetric(horizontal: 5),

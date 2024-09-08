@@ -1,19 +1,23 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_app/ui/utils/app_colors.dart';
 
 class ImageAndBookmarkSmall extends StatelessWidget {
-  const ImageAndBookmarkSmall({super.key});
+  const ImageAndBookmarkSmall({super.key, required this.imagePath});
+  final String imagePath;
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       alignment: Alignment.topLeft,
       children: [
-        Image.asset(
-          'assets/images/bg_1.png',
-          width: MediaQuery.of(context).size.width * .23,
-          height: MediaQuery.of(context).size.height * .14,
-        ),
+      CachedNetworkImage(
+      imageUrl: imagePath,
+      placeholder: (context, url) => Center(child: CircularProgressIndicator(),),
+      errorWidget: (context, url, error) => Icon(Icons.error),
+        width: MediaQuery.of(context).size.width * .23,
+        height: MediaQuery.of(context).size.height * .14,
+      ),
         Positioned(
           left: -10,
           top: -10,

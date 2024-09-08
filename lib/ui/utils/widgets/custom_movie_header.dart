@@ -4,7 +4,10 @@ import 'package:movie_app/ui/utils/app_colors.dart';
 class CustomMovieCover extends StatelessWidget {
   const CustomMovieCover({
     super.key,
+    required this.coverImage,
   });
+
+  final String coverImage;
 
 
   @override
@@ -12,10 +15,10 @@ class CustomMovieCover extends StatelessWidget {
     return Container(
       width: double.infinity,
       height: MediaQuery.of(context).size.height * .24,
-      decoration: const BoxDecoration(
+      decoration:  BoxDecoration(
         image: DecorationImage(
-          image: AssetImage(
-            'assets/images/Image.png',
+          image: NetworkImage(
+            coverImage,
           ),
           fit: BoxFit.cover,
         ),
