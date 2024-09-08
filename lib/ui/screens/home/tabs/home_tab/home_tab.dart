@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_app/data/api/api_manager.dart';
+import 'package:movie_app/data/model/details_movie/DetailsMovie.dart';
 import 'package:movie_app/data/model/popular_response.dart';
 import 'package:movie_app/data/model/result.dart';
 import 'package:movie_app/ui/screens/movie_details/movie_details.dart';
@@ -44,13 +45,13 @@ class _HomeTabState extends State<HomeTab> {
             return Center(
               child: Text(
                 snapshot.error.toString(),
-                style: TextStyle(fontSize: 40),
+                style: const TextStyle(fontSize: 40),
               ),
             );
           } else if (snapshot.hasData) {
             return buildCarosalSlider(snapshot.data!.results!);
           } else {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }
@@ -81,14 +82,14 @@ class _HomeTabState extends State<HomeTab> {
   }
 
   buildNewReleases() => Container(
-        padding: EdgeInsets.all(15),
+        padding: const EdgeInsets.all(15),
         height: MediaQuery.of(context).size.height * .2,
         width: double.infinity,
         color: AppColors.grey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'New Releases ',
               style: TextStyle(
                 color: AppColors.white,
@@ -104,7 +105,7 @@ class _HomeTabState extends State<HomeTab> {
                   return Center(
                     child: Text(
                       snapshot.error.toString(),
-                      style: TextStyle(fontSize: 40),
+                      style: const TextStyle(fontSize: 40),
                     ),
                   );
                 } else if (snapshot.hasData) {
@@ -113,14 +114,24 @@ class _HomeTabState extends State<HomeTab> {
                         scrollDirection: Axis.horizontal,
                         itemCount: snapshot.data!.results!.length,
                         itemBuilder: (context, index) {
-                          return ImageAndBookmarkSmall(
-                            imagePath:
-                                snapshot.data!.results![index].posterPath ?? '',
+                          return InkWell(
+                            onTap: () async {
+                              DetailsMovie movieDetails =
+                                  await ApiManager.getDetailsMovie(snapshot
+                                      .data!.results![index].id
+                                      .toString());
+                              Navigator.pushNamed(
+                                  context, MovieDetails.routeName,
+                                  arguments: movieDetails);
+                            },
+                            child: ImageAndBookmarkSmall(
+                              movie: snapshot.data!.results![index],
+                            ),
                           );
                         }),
                   );
                 } else {
-                  return Center(
+                  return const Center(
                     child: CircularProgressIndicator(),
                   );
                 }
@@ -131,7 +142,7 @@ class _HomeTabState extends State<HomeTab> {
       );
 
   buildRecomended() => Container(
-        padding: EdgeInsets.all(15),
+        padding: const EdgeInsets.all(15),
         height: MediaQuery.of(context).size.height * .3,
         width: double.infinity,
         color: AppColors.grey,
@@ -154,7 +165,7 @@ class _HomeTabState extends State<HomeTab> {
                   return Center(
                     child: Text(
                       snapshot.error.toString(),
-                      style: TextStyle(fontSize: 40),
+                      style: const TextStyle(fontSize: 40),
                     ),
                   );
                 } else if (snapshot.hasData) {
@@ -168,14 +179,27 @@ class _HomeTabState extends State<HomeTab> {
                       },
                       itemCount: snapshot.data!.results!.length,
                       itemBuilder: (context, index) {
-                        return CustomMovieDetails(
-                          movie: snapshot.data!.results![index],
+                        return InkWell(
+                          onTap: () async {
+                            DetailsMovie movieDetails =
+                                await ApiManager.getDetailsMovie(snapshot
+                                    .data!.results![index].id
+                                    .toString());
+                            Navigator.pushNamed(
+                              context,
+                              MovieDetails.routeName,
+                              arguments: movieDetails,
+                            );
+                          },
+                          child: CustomMovieDetails(
+                            movie: snapshot.data!.results![index],
+                          ),
                         );
                       },
                     ),
                   );
                 } else {
-                  return Center(
+                  return const Center(
                     child: CircularProgressIndicator(),
                   );
                 }
@@ -186,8 +210,11 @@ class _HomeTabState extends State<HomeTab> {
       );
 
   Widget movieFullHeader(Results movie) => InkWell(
-        onTap: () {
-          Navigator.pushNamed(context, MovieDetails.routeName);
+        onTap: () async {
+          DetailsMovie movieDetails =
+              await ApiManager.getDetailsMovie(movie.id.toString());
+          Navigator.pushNamed(context, MovieDetails.routeName,
+              arguments: movieDetails);
         },
         child: Container(
           height: MediaQuery.of(context).size.height * .32,
@@ -214,7 +241,7 @@ class _HomeTabState extends State<HomeTab> {
                       children: [
                         Text(
                           movie.title ?? '',
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: AppColors.white,
                           ),
                         ),

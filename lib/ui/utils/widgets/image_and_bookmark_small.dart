@@ -1,10 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:movie_app/data/model/result.dart';
 import 'package:movie_app/ui/utils/app_colors.dart';
 
 class ImageAndBookmarkSmall extends StatelessWidget {
-  const ImageAndBookmarkSmall({super.key, required this.imagePath});
-  final String imagePath;
+  const ImageAndBookmarkSmall({super.key, required this.movie});
+  final Results movie;
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +13,7 @@ class ImageAndBookmarkSmall extends StatelessWidget {
       alignment: Alignment.topLeft,
       children: [
         CachedNetworkImage(
-          imageUrl: imagePath,
+          imageUrl: movie.posterPath ?? '',
           placeholder: (context, url) => const Center(
             child: CircularProgressIndicator(),
           ),

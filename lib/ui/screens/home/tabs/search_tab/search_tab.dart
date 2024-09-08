@@ -1,9 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_app/data/api/api_manager.dart';
+import 'package:movie_app/data/model/details_movie/DetailsMovie.dart';
 import 'package:movie_app/data/model/popular_response.dart';
 import 'package:movie_app/data/model/result.dart';
 import 'package:movie_app/data/provider/search_provider.dart';
+import 'package:movie_app/ui/screens/movie_details/movie_details.dart';
 import 'package:movie_app/ui/utils/app_colors.dart';
 import 'package:provider/provider.dart';
 
@@ -83,24 +85,25 @@ class _SearchTabState extends State<SearchTab> {
               child: CircularProgressIndicator(),
             ),
           )
-        else if (searchProvider.movies != null && searchProvider.movies!.isEmpty)
-           Expanded(
-             child: Center(
-               child: Column(
-                 mainAxisSize: MainAxisSize.min,
-                 children: [
-                   Image.asset(
-                     'assets/images/no_found_movies.png',
-                   ),
-                   Text(
-                     'No movies found',
-                     style: TextStyle(color: AppColors.white),
-                   ),
-                 ],
-               ),
-             ),
-           )
-       else if (searchProvider.movies != null)
+        else if (searchProvider.movies != null &&
+            searchProvider.movies!.isEmpty)
+          Expanded(
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(
+                    'assets/images/no_found_movies.png',
+                  ),
+                  Text(
+                    'No movies found',
+                    style: TextStyle(color: AppColors.white),
+                  ),
+                ],
+              ),
+            ),
+          )
+        else if (searchProvider.movies != null)
           Expanded(
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -111,59 +114,79 @@ class _SearchTabState extends State<SearchTab> {
                   : ListView.separated(
                       itemCount: searchProvider.movies!.length,
                       itemBuilder: (context, index) {
-                        return Container(
-                          margin: const EdgeInsets.symmetric(vertical: 10),
-                          width: MediaQuery.of(context).size.width * .8,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              CachedNetworkImage(
-                                imageUrl:
-                               searchProvider.movies![index].backdropPath ?? '',
-                                placeholder: (context, url) => const Center(
-                                  child: CircularProgressIndicator(),
+                        return InkWell(
+                          onTap: () async {
+                            DetailsMovie movieDetails =
+                                await ApiManager.getDetailsMovie(searchProvider
+                                    .movies![index].id
+                                    .toString());
+                            Navigator.pushNamed(
+                              context,
+                              MovieDetails.routeName,
+                              arguments: movieDetails,
+                            );
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(vertical: 10),
+                            width: MediaQuery.of(context).size.width * .8,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                CachedNetworkImage(
+                                  imageUrl: searchProvider
+                                          .movies![index].backdropPath ??
+                                      '',
+                                  placeholder: (context, url) => const Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                  errorWidget: (context, url, error) =>
+                                      const Icon(Icons.error),
+                                  width:
+                                      MediaQuery.of(context).size.width * .33,
+                                  height:
+                                      MediaQuery.of(context).size.height * .1,
                                 ),
-                                errorWidget: (context, url, error) =>
-                                    const Icon(Icons.error),
-                                width: MediaQuery.of(context).size.width * .33,
-                                height: MediaQuery.of(context).size.height * .1,
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(searchProvider.movies![index].title ??
-                                          '',
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style:
-                                          const TextStyle(color: AppColors.white),
-                                    ),
-                                    Text(
-                                      searchProvider.movies![index]
-                                              .releaseDate ??
-                                          '',
-                                      style: TextStyle(
-                                        color: AppColors.white.withOpacity(.53),
-                                      ),
-                                    ),
-                                    Text(
-                                      searchProvider.movies![index]
-                                              .originalTitle ??
-                                          '',
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        color: AppColors.white.withOpacity(.53),
-                                      ),
-                                    ),
-                                  ],
+                                const SizedBox(
+                                  width: 10,
                                 ),
-                              ),
-                            ],
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        searchProvider.movies![index].title ??
+                                            '',
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                            color: AppColors.white),
+                                      ),
+                                      Text(
+                                        searchProvider
+                                                .movies![index].releaseDate ??
+                                            '',
+                                        style: TextStyle(
+                                          color:
+                                              AppColors.white.withOpacity(.53),
+                                        ),
+                                      ),
+                                      Text(
+                                        searchProvider
+                                                .movies![index].originalTitle ??
+                                            '',
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          color:
+                                              AppColors.white.withOpacity(.53),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         );
                       },

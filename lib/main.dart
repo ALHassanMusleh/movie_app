@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
         routes: {
           Splash.routeName: (_) => const Splash(),
           HomeScaffold.routeName: (_) => const HomeScaffold(),
-          MovieDetails.routeName: (_) => const MovieDetails(),
+          MovieDetails.routeName: (_) =>  MovieDetails(),
         },
         initialRoute: Splash.routeName,
       ),

@@ -22,7 +22,7 @@ class CustomMovieDetails extends StatelessWidget {
         child: Column(
           children: [
             ImageAndBookmarkSmall(
-              imagePath: movie.posterPath ?? '',
+              movie: movie,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 5),
@@ -43,7 +43,7 @@ class CustomMovieDetails extends StatelessWidget {
                         width: 8,
                       ),
                       Text(
-                        movie.voteAverage?.ceil().toString() ?? '',
+                        movie.voteAverage?.toStringAsFixed(1).toString() ?? '',
                         style: const TextStyle(
                           color: AppColors.white,
                           fontSize: 15,

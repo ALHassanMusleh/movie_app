@@ -1,174 +1,230 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app/data/api/api_manager.dart';
+import 'package:movie_app/data/model/details_movie/DetailsMovie.dart';
+import 'package:movie_app/data/model/popular_response.dart';
 import 'package:movie_app/ui/utils/app_colors.dart';
+import 'package:movie_app/ui/utils/widgets/custom_movie_details.dart';
 import 'package:movie_app/ui/utils/widgets/custom_movie_header.dart';
 import 'package:movie_app/ui/utils/widgets/image_and_bookmark_large.dart';
-import 'package:movie_app/ui/utils/widgets/image_and_bookmark_small.dart';
 
 class MovieDetails extends StatelessWidget {
-  const MovieDetails({super.key});
+  MovieDetails({super.key});
   static const String routeName = 'MovieDetails';
+  late DetailsMovie movieDetails;
 
   @override
   Widget build(BuildContext context) {
-    ApiManager.getDetailsMovie('278');
-    ApiManager.getSimilarMovie('278');
+    movieDetails = ModalRoute.of(context)!.settings.arguments as DetailsMovie;
+    print(movieDetails.title);
+    // ApiManager.getDetailsMovie('278');
+    // ApiManager.getSimilarMovie('278');
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Dora and the lost city of gold'),
+        title: Text(movieDetails.title ?? ''),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            flex: 7,
+          buildMovieDetails(context),
+          buildMovieLikeThis(context),
+        ],
+      ),
+    );
+  }
+
+  Expanded buildMovieLikeThis(BuildContext context) {
+    return Expanded(
+      flex: 4,
+      child: Container(
+        padding: const EdgeInsets.all(15),
+        height: MediaQuery.of(context).size.height * .3,
+        width: double.infinity,
+        color: AppColors.grey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'More like this',
+              style: TextStyle(
+                color: AppColors.white,
+              ),
+            ),
+            const SizedBox(
+              height: 5,
+            ),
+            Expanded(
+              child: FutureBuilder<PopularResponse>(
+                future: ApiManager.getSimilarMovie(movieDetails.id.toString()),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Text(
+                        snapshot.error.toString(),
+                        style: const TextStyle(fontSize: 40),
+                      ),
+                    );
+                  } else if (snapshot.hasData) {
+                    return ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      separatorBuilder: (context, index) {
+                        return const SizedBox(
+                          width: 10,
+                        );
+                      },
+                      itemCount: snapshot.data!.results!.length,
+                      itemBuilder: (context, index) {
+                        return InkWell(
+                          onTap: () async {
+                            DetailsMovie movieDetails =
+                                await ApiManager.getDetailsMovie(snapshot
+                                    .data!.results![index].id
+                                    .toString());
+                            Navigator.pushNamed(
+                              context,
+                              MovieDetails.routeName,
+                              arguments: movieDetails,
+                            );
+                          },
+                          child: CustomMovieDetails(
+                            movie: snapshot.data!.results![index],
+                          ),
+                        );
+                      },
+                    );
+                  } else {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Expanded buildMovieDetails(BuildContext context) {
+    return Expanded(
+      flex: 7,
+      child: Column(
+        children: [
+          CustomMovieCover(
+            coverImage: movieDetails.backdropPath ?? '',
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                 // CustomMovieCover(),
-                const SizedBox(
-                  height: 10,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      movieDetails.title ?? '',
+                      style: const TextStyle(
+                        color: AppColors.white,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      movieDetails.releaseDate ?? '',
+                      style: TextStyle(
+                        color: AppColors.white.withOpacity(.53),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                  ],
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Column(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Dora and the lost city of gold',
-                            style: TextStyle(
-                              color: AppColors.white,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            '2019  PG-13  2h 7m',
-                            style: TextStyle(
-                              color: AppColors.white.withOpacity(.53),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                        ],
+                      Expanded(
+                        flex: 4,
+                        child: ImageAndBookmarkLarge(
+                          imagePath: movieDetails.posterPath ?? '',
+                        ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
+                      Expanded(
+                        flex: 6,
+                        child: Column(
                           children: [
-                            // const Expanded(
-                            //     flex: 4, child: ImageAndBookmarkLarge()),
-                            Expanded(
-                              flex: 6,
-                              child: Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 8, vertical: 4),
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(4),
-                                          border: Border.all(
-                                            color: AppColors.white
-                                                .withOpacity(0.5),
-                                            width: 1,
-                                          ),
-                                        ),
-                                        child: Text(
-                                          'Action',
-                                          style: TextStyle(
-                                            color: AppColors.white
-                                                .withOpacity(0.6),
-                                          ),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * .03,
+                              child: ListView.separated(
+                                  separatorBuilder: (context, index) {
+                                    return const SizedBox(
+                                      width: 5,
+                                    );
+                                  },
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: movieDetails.genres!.length,
+                                  itemBuilder: (context, index) {
+                                    return Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8, vertical: 4),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(4),
+                                        border: Border.all(
+                                          color:
+                                              AppColors.white.withOpacity(0.5),
+                                          width: 1,
                                         ),
                                       ),
-                                      const SizedBox(
-                                        width: 8,
-                                      ),
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 8, vertical: 4),
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(4),
-                                          border: Border.all(
-                                              color: AppColors.white
-                                                  .withOpacity(0.5),
-                                              width: 1),
-                                        ),
-                                        child: Text(
-                                          'Action',
-                                          style: TextStyle(
-                                            color: AppColors.white
-                                                .withOpacity(0.6),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: 8,
-                                      ),
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 8, vertical: 4),
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(4),
-                                          border: Border.all(
-                                              color: AppColors.white
-                                                  .withOpacity(0.5),
-                                              width: 1),
-                                        ),
-                                        child: Text(
-                                          'Action',
-                                          style: TextStyle(
-                                            color: AppColors.white
-                                                .withOpacity(0.6),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  const Text(
-                                    'sdgdsgsdgsdgsdgsdgsdgsdfhfdhfdhfdhfdhfdhfdhdgsdgsdgdssdgdsgsdgsdgsdgsdgsdgsdfhfdhfdhfdhfdhfdhfdhdgsdgsdgdssdgdsgsdgsdgsdgsdgsdgsdfhfdhfdhfdhfdhfdhfdhdgsdgsdgdssdgdsgsdgsdgsdgsdgsdgsdfhfdhfdhfdhfdhfdhfdhdgsdgsdgds',
-                                    style: TextStyle(
-                                      color: Color(0xffbacCBCBCB),
-                                    ),
-                                    maxLines: 6,
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  const Row(
-                                    children: [
-                                      Icon(
-                                        Icons.star,
-                                        color: AppColors.primary,
-                                        size: 20,
-                                      ),
-                                      SizedBox(
-                                        width: 8,
-                                      ),
-                                      Text(
-                                        '7.7',
+                                      child: Text(
+                                        movieDetails.genres![index].name!,
                                         style: TextStyle(
-                                            color: AppColors.white,
-                                            fontSize: 20),
+                                          color:
+                                              AppColors.white.withOpacity(0.6),
+                                        ),
                                       ),
-                                    ],
-                                  ),
-                                ],
+                                    );
+                                  }),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              movieDetails.overview ?? '',
+                              style: const TextStyle(
+                                color: Color(0xffbacCBCBCB),
                               ),
+                              maxLines: 7,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: [
+                                const Icon(
+                                  Icons.star,
+                                  color: AppColors.primary,
+                                  size: 20,
+                                ),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                Text(
+                                  movieDetails.voteAverage
+                                          ?.toStringAsFixed(1)
+                                          .toString() ??
+                                      '',
+                                  style: const TextStyle(
+                                      color: AppColors.white, fontSize: 20),
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -177,107 +233,6 @@ class MovieDetails extends StatelessWidget {
                   ),
                 ),
               ],
-            ),
-          ),
-          Expanded(
-            flex: 4,
-            child: Container(
-              padding: const EdgeInsets.all(15),
-              height: MediaQuery.of(context).size.height * .3,
-              width: double.infinity,
-              color: AppColors.grey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'More like this',
-                    style: TextStyle(
-                      color: AppColors.white,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  Expanded(
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      separatorBuilder: (context, index) {
-                        return const SizedBox(
-                          width: 10,
-                        );
-                      },
-                      itemCount: 10,
-                      itemBuilder: (context, index) {
-                        return Container(
-                            width: MediaQuery.of(context).size.width * .23,
-                            height: MediaQuery.of(context).size.height * .2,
-                            decoration: BoxDecoration(
-                              color: const Color(0xff343534),
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            child: Column(
-                              children: [
-                                 // ImageAndBookmarkSmall(imagePath: '',),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(horizontal: 5),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const SizedBox(
-                                        height: 5,
-                                      ),
-                                      const Row(
-                                        children: [
-                                          Icon(
-                                            Icons.star,
-                                            color: AppColors.primary,
-                                            size: 12,
-                                          ),
-                                          SizedBox(
-                                            width: 8,
-                                          ),
-                                          Text(
-                                            '7.7',
-                                            style: TextStyle(
-                                              color: AppColors.white,
-                                              fontSize: 15,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 5,
-                                      ),
-                                      const Text(
-                                        'Deadpool 2',
-                                        style: TextStyle(
-                                          color: AppColors.white,
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: 5,
-                                      ),
-                                      Text(
-                                        '2018  R  1h 59m',
-                                        style: TextStyle(
-                                          color:
-                                              AppColors.white.withOpacity(.53),
-                                          fontSize: 10,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ));
-                      },
-                    ),
-                  ),
-                ],
-              ),
             ),
           ),
         ],
