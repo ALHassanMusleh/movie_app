@@ -11,17 +11,19 @@ class ImageAndBookmarkSmall extends StatelessWidget {
     return Stack(
       alignment: Alignment.topLeft,
       children: [
-      CachedNetworkImage(
-      imageUrl: imagePath,
-      placeholder: (context, url) => Center(child: CircularProgressIndicator(),),
-      errorWidget: (context, url, error) => Icon(Icons.error),
-        width: MediaQuery.of(context).size.width * .23,
-        height: MediaQuery.of(context).size.height * .14,
-      ),
-        Positioned(
-          left: -10,
+        CachedNetworkImage(
+          imageUrl: imagePath,
+          placeholder: (context, url) => const Center(
+            child: CircularProgressIndicator(),
+          ),
+          errorWidget: (context, url, error) => const Icon(Icons.error),
+          width: MediaQuery.of(context).size.width * .23,
+          height: MediaQuery.of(context).size.height * .14,
+        ),
+        const Positioned(
+          left: 0,
           top: -10,
-          child: const Stack(
+          child: Stack(
             alignment: Alignment.center, // Center the child inside
             clipBehavior: Clip.none,
             children: [
