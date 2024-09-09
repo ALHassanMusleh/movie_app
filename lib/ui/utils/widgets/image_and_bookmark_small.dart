@@ -47,7 +47,7 @@ class ImageAndBookmarkSmall extends StatelessWidget {
               alignment: Alignment.center, // Center the child inside
               clipBehavior: Clip.none,
               children: [
-                watchlistProvider.isExist(movie)?
+                watchlistProvider.moviesIsBooked(movie)?
                 Icon(
                   Icons.bookmark,
                   color: AppColors.primary,
@@ -62,7 +62,7 @@ class ImageAndBookmarkSmall extends StatelessWidget {
                   child: Align(
                     alignment: Alignment.center,
                     child:
-                    watchlistProvider.isExist(movie)?
+                    watchlistProvider.moviesIsBooked(movie)?
                     Icon(
                       Icons.done,
                       color: AppColors.white,
