@@ -114,8 +114,19 @@ class _HomeTabState extends State<HomeTab> {
                         scrollDirection: Axis.horizontal,
                         itemCount: snapshot.data!.results!.length,
                         itemBuilder: (context, index) {
-                          return ImageAndBookmarkSmall(
-                            movie: snapshot.data!.results![index],
+                          return InkWell(
+                            onTap: () async {
+                              DetailsMovie movieDetails =
+                                  await ApiManager.getDetailsMovie(snapshot
+                                      .data!.results![index].id
+                                      .toString());
+                              Navigator.pushNamed(
+                                  context, MovieDetails.routeName,
+                                  arguments: movieDetails);
+                            },
+                            child: ImageAndBookmarkSmall(
+                              movie: snapshot.data!.results![index],
+                            ),
                           );
                         }),
                   );
@@ -168,8 +179,21 @@ class _HomeTabState extends State<HomeTab> {
                       },
                       itemCount: snapshot.data!.results!.length,
                       itemBuilder: (context, index) {
-                        return CustomMovieDetails(
-                          movie: snapshot.data!.results![index],
+                        return InkWell(
+                          onTap: () async {
+                            DetailsMovie movieDetails =
+                                await ApiManager.getDetailsMovie(snapshot
+                                    .data!.results![index].id
+                                    .toString());
+                            Navigator.pushNamed(
+                              context,
+                              MovieDetails.routeName,
+                              arguments: movieDetails,
+                            );
+                          },
+                          child: CustomMovieDetails(
+                            movie: snapshot.data!.results![index],
+                          ),
                         );
                       },
                     ),
@@ -185,61 +209,61 @@ class _HomeTabState extends State<HomeTab> {
         ),
       );
 
-  Widget movieFullHeader(Results movie) => Container(
-    height: MediaQuery.of(context).size.height * .32,
-    child: Stack(
-      clipBehavior: Clip.none,
-      children: [
-        InkWell(
-          onTap: () async {
-            DetailsMovie movieDetails =
-            await ApiManager.getDetailsMovie(movie.id.toString());
-            Navigator.pushNamed(context, MovieDetails.routeName,
-                arguments: movieDetails);
-          },
-          child: CustomMovieCover(
-            coverImage: movie.backdropPath ?? '',
-          ),
-        ),
-        Positioned(
-          top: 75,
-          left: 10,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
+  Widget movieFullHeader(Results movie) => InkWell(
+        onTap: () async {
+          DetailsMovie movieDetails =
+              await ApiManager.getDetailsMovie(movie.id.toString());
+          Navigator.pushNamed(context, MovieDetails.routeName,
+              arguments: movieDetails);
+        },
+        child: Container(
+          height: MediaQuery.of(context).size.height * .32,
+          child: Stack(
+            clipBehavior: Clip.none,
             children: [
-              ImageAndBookmarkLarge(
-                imagePath: movie.posterPath ?? '',
+              CustomMovieCover(
+                coverImage: movie.backdropPath ?? '',
               ),
-              const SizedBox(
-                width: 10,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    movie.title ?? '',
-                    style: const TextStyle(
-                      color: AppColors.white,
+              Positioned(
+                top: 75,
+                left: 10,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    ImageAndBookmarkLarge(
+                      imagePath: movie.posterPath ?? '',
                     ),
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  Text(
-                    movie.releaseDate ?? '',
-                    style: TextStyle(
-                      color: AppColors.white.withOpacity(.53),
+                    const SizedBox(
+                      width: 10,
                     ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                ],
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          movie.title ?? '',
+                          style: const TextStyle(
+                            color: AppColors.white,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          movie.releaseDate ?? '',
+                          style: TextStyle(
+                            color: AppColors.white.withOpacity(.53),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
         ),
-      ],
-    ),
-  );
+      );
 }

@@ -14,34 +14,29 @@ class ImageAndBookmarkLarge extends StatelessWidget {
       children: [
         CachedNetworkImage(
           imageUrl: imagePath,
-          placeholder: (context, url) => const Center(child: CircularProgressIndicator(),),
-          errorWidget: (context, url, error) => const Icon(Icons.error),
+          placeholder: (context, url) => Center(child: CircularProgressIndicator(),),
+          errorWidget: (context, url, error) => Icon(Icons.error),
           width: MediaQuery.of(context).size.width * .31,
           height: MediaQuery.of(context).size.height * .22,
         ),
-         Positioned(
+        const Positioned(
           left: -10,
           top: -10,
-          child: InkWell(
-            onTap: (){
-              print('book mark');
-            },
-            child: const Stack(
-              alignment: Alignment.center,
-              clipBehavior: Clip.none,
-              children: [
-                Icon(
-                  Icons.bookmark,
-                  color: Color(0xff514F4F),
-                  size: 45,
-                ),
-                Icon(
-                  Icons.add,
-                  color: AppColors.white,
-                  size: 15,
-                ),
-              ],
-            ),
+          child: Stack(
+            alignment: Alignment.center,
+            clipBehavior: Clip.none,
+            children: [
+              Icon(
+                Icons.bookmark,
+                color: Color(0xff514F4F),
+                size: 45,
+              ),
+              Icon(
+                Icons.add,
+                color: AppColors.white,
+                size: 15,
+              ),
+            ],
           ),
         ),
         // Positioned(
