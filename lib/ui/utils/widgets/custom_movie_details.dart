@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:movie_app/data/api/api_manager.dart';
+import 'package:movie_app/data/model/details_movie/DetailsMovie.dart';
 import 'package:movie_app/data/model/result.dart';
+import 'package:movie_app/ui/screens/movie_details/movie_details.dart';
 import 'package:movie_app/ui/utils/app_colors.dart';
 import 'package:movie_app/ui/utils/widgets/image_and_bookmark_small.dart';
 
@@ -21,8 +24,16 @@ class CustomMovieDetails extends StatelessWidget {
         ),
         child: Column(
           children: [
-            ImageAndBookmarkSmall(
-              movie: movie,
+            InkWell(
+              onTap: () async {
+                DetailsMovie movieDetails =
+                await ApiManager.getDetailsMovie(movie.id.toString());
+                Navigator.pushNamed(context, MovieDetails.routeName,
+                    arguments: movieDetails);
+              },
+              child: ImageAndBookmarkSmall(
+                movie: movie,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 5),
