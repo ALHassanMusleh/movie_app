@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app/data/provider/search_provider.dart';
+import 'package:movie_app/data/provider/watchlist_provider.dart';
 import 'package:movie_app/ui/screens/home/tabs/home_scaffold.dart';
 import 'package:movie_app/ui/screens/movie_details/movie_details.dart';
 import 'package:movie_app/ui/screens/splash/splash.dart';
@@ -16,8 +17,11 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => SearchProvider(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => SearchProvider(),),
+        ChangeNotifierProvider(create: (_) => WatchlistProvider(),),
+      ],
       child: MaterialApp(
         title: 'Movies App',
         darkTheme: AppTheme.dark,
