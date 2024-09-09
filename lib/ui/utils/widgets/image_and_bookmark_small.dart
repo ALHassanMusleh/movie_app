@@ -15,7 +15,7 @@ class ImageAndBookmarkSmall extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    watchlistProvider = Provider.of(context);
+    watchlistProvider =Provider.of(context);
     return Stack(
       alignment: Alignment.topLeft,
       children: [
@@ -41,45 +41,41 @@ class ImageAndBookmarkSmall extends StatelessWidget {
           top: -10,
           child: InkWell(
             onTap: (){
-              print('book mark');
+              watchlistProvider.toggleWatchlist(movie);
             },
-            child:  InkWell(
-              onTap: watchlistProvider.toggleWatchlist(movie),
-              child: Stack(
-                alignment: Alignment.center, // Center the child inside
-                clipBehavior: Clip.none,
-                children: [
-                  watchlistProvider.isExist(movie)?
-                  Icon(
-                    Icons.bookmark,
-                    color: AppColors.primary,
-                    size: 45,
-                  )
-                  :
-                  Icon(
-                    Icons.bookmark,
-                    color: Color(0xff514F4F),
-                    size: 45,
-                  ),
-                  Positioned.fill(
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: watchlistProvider.isExist(movie)?
-                      Icon(
-                        Icons.done,
-                        color: AppColors.white,
-                        size: 15,
-                      )
-                          :
-                      Icon(
-                        Icons.add,
-                        color: AppColors.white,
-                        size: 15,
-                      ),
+            child:  Stack(
+              alignment: Alignment.center, // Center the child inside
+              clipBehavior: Clip.none,
+              children: [
+                watchlistProvider.isExist(movie)?
+                Icon(
+                  Icons.bookmark,
+                  color: AppColors.primary,
+                  size: 45,
+                )
+                :Icon(
+                  Icons.bookmark,
+                  color: Color(0xff514F4F),
+                  size: 45,
+                ),
+                Positioned.fill(
+                  child: Align(
+                    alignment: Alignment.center,
+                    child:
+                    watchlistProvider.isExist(movie)?
+                    Icon(
+                      Icons.done,
+                      color: AppColors.white,
+                      size: 15,
+                    )
+                        :Icon(
+                      Icons.add,
+                      color: AppColors.white,
+                      size: 15,
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
                  ),
