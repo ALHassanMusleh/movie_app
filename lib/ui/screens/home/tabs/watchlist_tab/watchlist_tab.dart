@@ -23,7 +23,10 @@ class WatchlistTab extends StatelessWidget {
               margin: const EdgeInsets.symmetric(horizontal: 20),
               child: Text('Watchlist',style: TextStyle(color: Colors.white,fontSize: 22,fontWeight: FontWeight.w400),)),
           Spacer(flex: 2,),
-          Expanded(
+          watchlistProvider.moviesList.isEmpty? Expanded(
+              flex: 90,
+              child: Center(child: Text('Watchlist is empty',style: TextStyle(color: AppColors.grey,fontSize: 32),)))
+          : Expanded(
             flex: 90,
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -44,19 +47,66 @@ class WatchlistTab extends StatelessWidget {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          CachedNetworkImage(
-                            imageUrl: watchlistProvider
-                                .moviesList![index].backdropPath ??
-                                '',
-                            placeholder: (context, url) => const Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                            errorWidget: (context, url, error) =>
-                            const Icon(Icons.error),
-                            width:
-                            MediaQuery.of(context).size.width * .33,
-                            height:
-                            MediaQuery.of(context).size.height * .1,
+                          Stack(
+                            children: [
+                              CachedNetworkImage(
+                                imageUrl: watchlistProvider
+                                    .moviesList![index].backdropPath ??
+                                    '',
+                                placeholder: (context, url) => const Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                                errorWidget: (context, url, error) =>
+                                const Icon(Icons.error),
+                                width:
+                                MediaQuery.of(context).size.width * .33,
+                                height:
+                                MediaQuery.of(context).size.height * .1,
+                              ),
+                              Positioned(
+                                left: -10,
+                                top: -5,
+                                child: InkWell(
+                                  onTap: (){
+                                    watchlistProvider.toggleWatchlist(watchlistProvider.moviesList[index]);
+                                  },
+                                  child:  Stack(
+                                    alignment: Alignment.center, // Center the child inside
+                                    clipBehavior: Clip.none,
+                                    children: [
+                                      watchlistProvider.moviesIsBooked(watchlistProvider.moviesList[index])?
+                                      Icon(
+                                        Icons.bookmark,
+                                        color: AppColors.primary,
+                                        size: 45,
+                                      )
+                                          :Icon(
+                                        Icons.bookmark,
+                                        color: Color(0xff514F4F),
+                                        size: 45,
+                                      ),
+                                      Positioned.fill(
+                                        child: Align(
+                                          alignment: Alignment.center,
+                                          child:
+                                          watchlistProvider.moviesIsBooked(watchlistProvider.moviesList[index])?
+                                          Icon(
+                                            Icons.done,
+                                            color: AppColors.white,
+                                            size: 15,
+                                          )
+                                              :Icon(
+                                            Icons.add,
+                                            color: AppColors.white,
+                                            size: 15,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                           const SizedBox(
                             width: 10,

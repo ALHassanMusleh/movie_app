@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:movie_app/ui/screens/home/movie_discover.dart';
 
 class BrowseTab extends StatefulWidget {
   const BrowseTab({super.key});
@@ -35,7 +36,7 @@ class _BrowseTabState extends State<BrowseTab> {
                   : Expanded(
                 flex: 85,
                 child: GridView.builder(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,  // 2 items per row
                       crossAxisSpacing: 32,
                       mainAxisSpacing: 32,
@@ -43,9 +44,16 @@ class _BrowseTabState extends State<BrowseTab> {
                     ),
                     itemCount: categoriesList.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return CategoryTile(
-                        category: categoriesList[index],
-                        imagePath: 'assets/images/${categoriesList[index]}.jpg', // Replace with real image URL
+                      return GestureDetector(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                          MovieDiscover(categoryName: categoriesList[index])
+                          ));
+                        },
+                        child: CategoryTile(
+                          category: categoriesList[index],
+                          imagePath: 'assets/images/${categoriesList[index]}.jpg', // Replace with real image URL
+                        ),
                       );
                     },
                 ),

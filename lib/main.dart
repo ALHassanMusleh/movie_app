@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app/data/provider/search_provider.dart';
 import 'package:movie_app/data/provider/watchlist_provider.dart';
+import 'package:movie_app/ui/screens/home/movie_discover.dart';
 import 'package:movie_app/ui/screens/home/tabs/home_scaffold.dart';
 import 'package:movie_app/ui/screens/movie_details/movie_details.dart';
 import 'package:movie_app/ui/screens/splash/splash.dart';

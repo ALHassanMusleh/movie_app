@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:movie_app/data/api/api_manager.dart';
 import 'package:movie_app/data/model/details_movie/DetailsMovie.dart';
 import 'package:movie_app/data/model/popular_response.dart';
+import 'package:movie_app/data/model/result.dart';
 import 'package:movie_app/ui/utils/app_colors.dart';
 import 'package:movie_app/ui/utils/widgets/custom_movie_details.dart';
 import 'package:movie_app/ui/utils/widgets/custom_movie_header.dart';
@@ -153,6 +154,7 @@ class MovieDetails extends StatelessWidget {
                       Expanded(
                         flex: 4,
                         child: ImageAndBookmarkLarge(
+                          movie: Results.fromDetailsMovie(movieDetails),
                           imagePath: movieDetails.posterPath ?? '',
                         ),
                       ),

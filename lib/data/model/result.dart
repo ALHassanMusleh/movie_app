@@ -1,3 +1,5 @@
+import 'package:movie_app/data/model/details_movie/DetailsMovie.dart';
+
 class Results {
   Results({
     this.adult,
@@ -96,5 +98,27 @@ class Results {
     map['vote_average'] = voteAverage;
     map['vote_count'] = voteCount;
     return map;
+  }
+  factory Results.fromDetailsMovie(DetailsMovie movie) {
+    return Results(
+      adult: movie.adult,
+      backdropPath: movie.backdropPath,
+      genreIds: movie.genres
+          ?.map((genre) => genre.id)
+          .whereType<num>()
+          .toList(),
+      // Assuming Genres class has an id
+      id: movie.id,
+      originalLanguage: movie.originalLanguage,
+      originalTitle: movie.originalTitle,
+      overview: movie.overview,
+      popularity: movie.popularity,
+      posterPath: movie.posterPath,
+      releaseDate: movie.releaseDate,
+      title: movie.title,
+      video: movie.video,
+      voteAverage: movie.voteAverage,
+      voteCount: movie.voteCount,
+    );
   }
 }

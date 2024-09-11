@@ -231,6 +231,7 @@ class _HomeTabState extends State<HomeTab> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     ImageAndBookmarkLarge(
+                      movie: movie,
                       imagePath: movie.posterPath ?? '',
                     ),
                     const SizedBox(
