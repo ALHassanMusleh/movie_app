@@ -85,8 +85,7 @@ class _SearchTabState extends State<SearchTab> {
               child: CircularProgressIndicator(),
             ),
           )
-        else if (searchProvider.movies != null &&
-            searchProvider.movies!.isEmpty)
+        else if (searchProvider.movies!.isEmpty)
           Expanded(
             child: Center(
               child: Column(

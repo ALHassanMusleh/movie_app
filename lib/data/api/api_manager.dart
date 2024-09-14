@@ -83,14 +83,14 @@ abstract class ApiManager {
   }
 
   // static  PopularResponse? response;
-  static Future<PopularResponse> searchMovie(String movie) async {
+  static Future<PopularResponse?> searchMovie(String movie) async {
     Response serverResponse = await get(Uri.parse(
         '$_baseUrl/search/movie?query=$movie&language=en&api_key=$_apiKey'));
     if (serverResponse.statusCode >= 200 && serverResponse.statusCode < 300) {
       Map json = jsonDecode(serverResponse.body) as Map;
       PopularResponse response = PopularResponse.fromJson(json);
       print(response.results);
-      print(response.results?[0].title);
+      // print(response.results?[0].title);
       return response;
     } else {
       throw 'Something went wrong please try again later';

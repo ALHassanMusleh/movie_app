@@ -11,8 +11,15 @@ class SearchProvider extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
 
-    PopularResponse response = await ApiManager.searchMovie(movie);
-    movies = response.results!;
+    PopularResponse? response = await ApiManager.searchMovie(movie);
+
+    if (response?.results != null && response!.results!.isNotEmpty) {
+      movies = response.results;
+      print('not empty');
+    } else {
+      movies = [];
+      print('empty');
+    }
 
     isLoading = false;
     notifyListeners();
